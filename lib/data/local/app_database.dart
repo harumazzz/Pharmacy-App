@@ -13,14 +13,9 @@ import 'package:pharmacy_app/data/local/table/user_table.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [
-  Users,
-  Categories,
-  Products,
-  CartItems,
-  Orders,
-  OrderItems,
-])
+@DriftDatabase(
+  tables: [Users, Categories, Products, CartItems, Orders, OrderItems],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
