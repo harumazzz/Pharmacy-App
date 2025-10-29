@@ -21,8 +21,8 @@ class Auth extends _$Auth {
   Future<void> login(String email, String password) async {
     state = const AuthState.loading();
     try {
-      await _authRepository.login(email, password);
-      state = const AuthState.authenticated();
+      final user = await _authRepository.login(email, password);
+      state = AuthState.authenticated(user);
     } on InvalidCredentialsException catch (e) {
       state = AuthState.error(e.message);
     } on AuthException catch (e) {
@@ -42,8 +42,8 @@ class Auth extends _$Auth {
         fullName: fullName,
         role: 'user',
       );
-      await _authRepository.register(userToRegister);
-      state = const AuthState.authenticated();
+      final user = await _authRepository.register(userToRegister);
+      state = AuthState.authenticated(user);
     } on EmailAlreadyInUseException catch (e) {
       state = AuthState.error(e.message);
     } on AuthException catch (e) {

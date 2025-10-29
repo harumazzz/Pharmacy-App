@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pharmacy_app/presentation/providers/auth/auth_provider.dart';
+import 'package:pharmacy_app/presentation/providers/auth/auth_state.dart';
 import 'package:pharmacy_app/presentation/providers/product_detail/product_detail_provider.dart';
+import 'package:pharmacy_app/presentation/providers/providers.dart';
 import 'package:pharmacy_app/presentation/widgets/error_display.dart';
 import 'package:pharmacy_app/presentation/widgets/loading_spinner.dart';
 import 'package:pharmacy_app/presentation/widgets/primary_button.dart';
@@ -98,7 +101,7 @@ class _ProductDetails extends StatelessWidget {
           const SizedBox(height: 16.0),
           _DescriptionSection(description: product.description),
           const SizedBox(height: 24.0),
-          _AddToCartButton(productName: product.name),
+          _AddToCartButton(productId: product.id, productName: product.name),
         ],
       ),
     );
@@ -151,25 +154,32 @@ class _DescriptionSection extends StatelessWidget {
   }
 }
 
-class _AddToCartButton extends StatelessWidget {
+class _AddToCartButton extends ConsumerWidget {
+  final int productId;
   final String productName;
 
-  const _AddToCartButton({required this.productName});
+  const _AddToCartButton({required this.productId, required this.productName});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       width: double.infinity,
       child: PrimaryButton(
         text: 'Thêm vào giỏ hàng',
-        onPressed: () {
+        onPressed: () async {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('$productName đã được thêm vào giỏ hàng'),
               duration: const Duration(seconds: 2),
             ),
           );
-          // TODO: Call addProductToCart from CartRepository
+          final userId = ref.read(authProvider).userId;
+          if (userId == null) {
+            return;
+          }
+          await ref
+              .read(cartRepositoryProvider)
+              .addProductToCart(userId, productId);
         },
       ),
     );

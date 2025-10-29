@@ -91,6 +91,7 @@ class OrderRepositoryImpl implements domain.OrderRepository {
         );
         await _db.into(_db.orderItems).insert(itemCompanion);
       }
+      await _db.cartItemDao.clearCart(order.userId);
     });
   }
 }

@@ -13,7 +13,7 @@ class AuthRepositoryImpl implements domain.AuthRepository {
   const AuthRepositoryImpl(this._db);
 
   @override
-  Future<void> login(String email, String password) async {
+  Future<model.User> login(String email, String password) async {
     final user = await _db.userDao.getUserByUsernameAndPassword(
       email,
       password,
@@ -21,11 +21,17 @@ class AuthRepositoryImpl implements domain.AuthRepository {
     if (user == null) {
       throw const InvalidCredentialsException();
     }
-    // Perhaps store current user or something, but for now, just check.
+    return model.User(
+      id: user.id,
+      username: user.username,
+      password: user.password,
+      fullName: user.fullName,
+      role: user.role,
+    );
   }
 
   @override
-  Future<void> register(model.User user) async {
+  Future<model.User> register(model.User user) async {
     final existingUser = await _db.userDao.getUserByUsername(user.username);
     if (existingUser != null) {
       throw const EmailAlreadyInUseException();
@@ -36,7 +42,18 @@ class AuthRepositoryImpl implements domain.AuthRepository {
       fullName: Value(user.fullName),
       role: user.role,
     );
-    return _db.userDao.insertUser(companion);
+    await _db.userDao.insertUser(companion);
+    final currentUser = await _db.userDao.getUserByUsername(user.username);
+    if (currentUser == null) {
+      throw Exception('User registration failed');
+    }
+    return model.User(
+      id: currentUser.id,
+      username: currentUser.username,
+      password: currentUser.password,
+      fullName: currentUser.fullName,
+      role: currentUser.role,
+    );
   }
 
   @override

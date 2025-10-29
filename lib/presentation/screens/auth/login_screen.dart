@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pharmacy_app/presentation/providers/auth/auth_provider.dart';
 import 'package:pharmacy_app/presentation/providers/auth/auth_state.dart';
+import 'package:pharmacy_app/presentation/screens/home/home_screen.dart';
 import 'package:pharmacy_app/presentation/widgets/custom_text_field.dart';
 import 'package:pharmacy_app/presentation/widgets/primary_button.dart';
 import 'package:pharmacy_app/presentation/widgets/secondary_button.dart';
@@ -26,13 +27,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       next.when(
         initial: () {},
         loading: () {},
-        authenticated: () {
-          // Navigate to home screen or dashboard
+        authenticated: (_) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Đăng nhập thành công!')),
           );
-          // Example navigation, replace with your actual home route
-          // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const HomeScreen()),
+          );
         },
         unauthenticated: () {},
         error: (message) {

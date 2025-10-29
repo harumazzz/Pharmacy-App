@@ -25,11 +25,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       next.when(
         initial: () {},
         loading: () {},
-        authenticated: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Đăng ký thành công!')),
-          );
-          Navigator.of(context).pop(); // Go back to login screen
+        authenticated: (_) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Đăng ký thành công!')));
+          Navigator.of(context).pop();
         },
         unauthenticated: () {},
         error: (message) {

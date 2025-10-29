@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pharmacy_app/presentation/providers/auth/auth_provider.dart';
+import 'package:pharmacy_app/presentation/providers/auth/auth_state.dart';
 import 'package:pharmacy_app/presentation/providers/product_list/product_list_provider.dart';
+import 'package:pharmacy_app/presentation/providers/providers.dart';
 import 'package:pharmacy_app/presentation/widgets/app_grid.dart';
 import 'package:pharmacy_app/presentation/widgets/error_display.dart';
 import 'package:pharmacy_app/presentation/widgets/loading_spinner.dart';
@@ -44,7 +47,7 @@ class ProductListScreen extends ConsumerWidget {
                 final product = products[index];
                 return ProductCard(
                   product: product,
-                  onAddToCart: () {
+                  onAddToCart: () async {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
@@ -53,7 +56,13 @@ class ProductListScreen extends ConsumerWidget {
                         duration: const Duration(seconds: 2),
                       ),
                     );
-                    // TODO: Call addProductToCart from CartRepository
+                    final userId = ref.read(authProvider).userId;
+                    if (userId == null) {
+                      return;
+                    }
+                    await ref
+                        .read(cartRepositoryProvider)
+                        .addProductToCart(userId, product.id);
                   },
                 );
               },

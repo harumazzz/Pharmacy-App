@@ -48,7 +48,20 @@ class CartRepositoryImpl implements domain.CartRepository {
   }
 
   @override
+  Future<void> updateCartItem(int cartItemId, int quantity) {
+    if (quantity <= 0) {
+      return _db.cartItemDao.removeCartItem(cartItemId).then((_) {});
+    }
+    return _db.cartItemDao.updateCartItemQuantity(cartItemId, quantity);
+  }
+
+  @override
   Future<void> removeProductFromCart(int cartItemId) {
-    return _db.cartItemDao.removeCartItem(cartItemId);
+    return _db.cartItemDao.removeCartItem(cartItemId).then((_) {});
+  }
+
+  @override
+  Future<void> clearCart(int userId) {
+    return _db.cartItemDao.clearCart(userId).then((_) {});
   }
 }
