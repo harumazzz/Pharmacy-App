@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pharmacy_app/presentation/providers/auth/auth_provider.dart';
 import 'package:pharmacy_app/presentation/providers/auth/auth_state.dart';
 import 'package:pharmacy_app/presentation/screens/auth/login_screen.dart';
+import 'package:pharmacy_app/presentation/screens/home_screen.dart';
 import 'package:pharmacy_app/presentation/widgets/loading_spinner.dart';
 import 'package:pharmacy_app/presentation/widgets/error_display.dart';
 
@@ -16,13 +17,7 @@ class AuthWrapper extends ConsumerWidget {
     return authState.when(
       initial: () => const LoadingSpinner(),
       loading: () => const LoadingSpinner(),
-      authenticated: () => const Scaffold(
-        body: Center(
-          child: Text(
-            'Welcome! (Authenticated)',
-          ), // Placeholder for authenticated state
-        ),
-      ),
+      authenticated: () => const HomeScreen(),
       unauthenticated: () => const LoginScreen(),
       error: (message) => ErrorDisplay(message: message),
     );
