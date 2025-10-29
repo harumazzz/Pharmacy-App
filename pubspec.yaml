@@ -44,6 +44,8 @@ dependencies:
   json_annotation: ^4.9.0
   get_it: ^8.2.0
   injectable: ^2.5.2
+  state_notifier: ^1.0.0
+  riverpod_annotation: ^3.0.3
 
 dev_dependencies:
   flutter_test:

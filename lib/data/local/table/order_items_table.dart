@@ -1,8 +1,9 @@
 import 'package:drift/drift.dart';
 
-class CartItems extends Table {
+class OrderItems extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get userId => integer()();
+  IntColumn get orderId => integer()();
   IntColumn get productId => integer()();
   IntColumn get quantity => integer()();
+  RealColumn get price => real()();
 }

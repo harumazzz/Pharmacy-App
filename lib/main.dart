@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pharmacy_app/di/injection.dart';
+import 'package:pharmacy_app/presentation/screens/auth/auth_wrapper.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,12 +14,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Pharmacy App',
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Home')),
-        body: const Center(child: Text('Hello World')),
-      ),
-    );
+    return const MaterialApp(title: 'Pharmacy App', home: AuthWrapper());
   }
 }
