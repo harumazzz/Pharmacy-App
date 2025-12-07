@@ -9,4 +9,8 @@ class OrderItemDao extends DatabaseAccessor<AppDatabase> with _$OrderItemDaoMixi
   final AppDatabase db;
 
   OrderItemDao(this.db) : super(db);
+
+  Future<List<OrderItem>> getOrderItems(int orderId) {
+    return (select(orderItems)..where((oi) => oi.orderId.equals(orderId))).get();
+  }
 }

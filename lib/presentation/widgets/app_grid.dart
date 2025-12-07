@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class AppGrid extends StatelessWidget {
-  final int crossAxisCount;
+  final int? crossAxisCount;
+  final double? minItemWidth;
   final double crossAxisSpacing;
   final double mainAxisSpacing;
   final double childAspectRatio;
@@ -13,7 +14,8 @@ class AppGrid extends StatelessWidget {
 
   const AppGrid({
     super.key,
-    required this.crossAxisCount,
+    this.crossAxisCount,
+    this.minItemWidth = 160.0,
     required this.itemBuilder,
     required this.itemCount,
     this.crossAxisSpacing = 8.0,
@@ -21,18 +23,40 @@ class AppGrid extends StatelessWidget {
     this.childAspectRatio = 1.0,
     this.shrinkWrap = false,
     this.physics,
-  });
+  }) : assert(crossAxisCount != null || minItemWidth != null);
 
   @override
   Widget build(BuildContext context) {
-    return AlignedGridView.count(
-      crossAxisCount: crossAxisCount,
-      crossAxisSpacing: crossAxisSpacing,
-      mainAxisSpacing: mainAxisSpacing,
-      shrinkWrap: shrinkWrap,
-      physics: physics,
-      itemCount: itemCount,
-      itemBuilder: itemBuilder,
+    if (crossAxisCount != null) {
+      return AlignedGridView.count(
+        crossAxisCount: crossAxisCount!,
+        crossAxisSpacing: crossAxisSpacing,
+        mainAxisSpacing: mainAxisSpacing,
+        shrinkWrap: shrinkWrap,
+        physics: physics,
+        itemCount: itemCount,
+        itemBuilder: itemBuilder,
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final availableWidth = constraints.maxWidth;
+        final itemWidth = minItemWidth ?? 160.0;
+        final crossAxisCount = (availableWidth / (itemWidth + crossAxisSpacing))
+            .floor()
+            .clamp(1, 4);
+
+        return AlignedGridView.count(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: crossAxisSpacing,
+          mainAxisSpacing: mainAxisSpacing,
+          shrinkWrap: shrinkWrap,
+          physics: physics,
+          itemCount: itemCount,
+          itemBuilder: itemBuilder,
+        );
+      },
     );
   }
 }

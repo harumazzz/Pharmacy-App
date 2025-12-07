@@ -67,6 +67,22 @@ class OrderRepositoryImpl implements domain.OrderRepository {
   }
 
   @override
+  Future<List<model_item.OrderItem>> getOrderItems(int orderId) async {
+    final items = await _db.orderItemDao.getOrderItems(orderId);
+    return items
+        .map(
+          (item) => model_item.OrderItem(
+            id: item.id,
+            orderId: item.orderId,
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.price,
+          ),
+        )
+        .toList();
+  }
+
+  @override
   Future<void> createOrder(
     model.Order order,
     List<model_item.OrderItem> items,

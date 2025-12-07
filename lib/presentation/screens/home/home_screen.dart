@@ -6,55 +6,162 @@ import 'package:pharmacy_app/presentation/providers/home/category_list_provider.
 import 'package:pharmacy_app/presentation/providers/home/search_query_provider.dart';
 import 'package:pharmacy_app/presentation/providers/home/searched_products_provider.dart';
 import 'package:pharmacy_app/presentation/providers/product_list/product_list_provider.dart';
-import 'package:pharmacy_app/presentation/providers/providers.dart';
+import 'package:pharmacy_app/presentation/screens/cart/cart_screen.dart';
+import 'package:pharmacy_app/presentation/screens/product_detail/product_detail_screen.dart';
+import 'package:pharmacy_app/presentation/screens/order/order_history_screen.dart';
+import 'package:pharmacy_app/presentation/screens/product_list/category_list_screen.dart';
 import 'package:pharmacy_app/presentation/screens/product_list/product_list_screen.dart';
 import 'package:pharmacy_app/presentation/widgets/app_grid.dart';
 import 'package:pharmacy_app/presentation/widgets/category_card.dart';
+import 'package:pharmacy_app/presentation/widgets/custom_app_bar.dart';
 import 'package:pharmacy_app/presentation/widgets/error_display.dart';
 import 'package:pharmacy_app/presentation/widgets/loading_spinner.dart';
 import 'package:pharmacy_app/presentation/widgets/empty_state.dart';
 import 'package:pharmacy_app/presentation/widgets/product_card.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: 'Trang chủ',
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      CartScreen(userId: ref.read(authProvider).userId ?? 0),
+                ),
+              );
+            },
+          ),
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: const Text('Đăng xuất'),
+                onTap: () {
+                  ref.read(authProvider.notifier).logout();
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: _currentIndex == 0
+          ? const _HomeContent()
+          : const OrderHistoryScreen(),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
+          BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Đơn hàng'),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeContent extends ConsumerWidget {
+  const _HomeContent();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchQuery = ref.watch(searchQueryProvider);
     final searchController = TextEditingController(text: searchQuery);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Trang chủ'), centerTitle: true),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Search bar
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: _SearchBar(controller: searchController),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Hero Section with Search
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
+            child: Column(
+              children: [
+                _SearchBar(controller: searchController),
+                const SizedBox(height: 8.0),
+                Text(
+                  'Tìm kiếm thuốc và dụng cụ y tế',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                ),
+              ],
             ),
-            // Categories section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Danh mục',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+          ),
+
+          // Categories section
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Danh mục',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const CategoryListScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text('Xem tất cả'),
+                ),
+              ],
             ),
-            const SizedBox(height: 140, child: _CategoriesSection()),
-            const SizedBox(height: 24.0),
-            // Products section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                searchQuery.isEmpty ? 'Sản phẩm' : 'Kết quả tìm kiếm',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+          ),
+          const SizedBox(height: 140, child: _CategoriesSection()),
+          const SizedBox(height: 24.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  searchQuery.isEmpty ? 'Sản phẩm nổi bật' : 'Kết quả tìm kiếm',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                if (searchQuery.isEmpty)
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const ProductListScreen(title: 'Tất cả sản phẩm'),
+                        ),
+                      );
+                    },
+                    child: const Text('Xem tất cả'),
+                  ),
+              ],
             ),
-            _ProductsSection(searchQuery: searchQuery),
-          ],
-        ),
+          ),
+          _ProductsSection(searchQuery: searchQuery),
+          const SizedBox(height: 32.0), // Bottom padding
+        ],
       ),
     );
   }
@@ -67,17 +174,48 @@ class _SearchBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: 'Tìm kiếm sản phẩm',
-        hintText: 'Nhập tên sản phẩm...',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
-        prefixIcon: const Icon(Icons.search),
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      onChanged: (value) {
-        ref.read(searchQueryProvider.notifier).setQuery(value);
-      },
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: 'Tìm kiếm sản phẩm',
+          hintText: 'Nhập tên thuốc hoặc dụng cụ y tế...',
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: BorderSide(color: Colors.grey[300]!),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: BorderSide(
+              color: Theme.of(context).primaryColor,
+              width: 2,
+            ),
+          ),
+          prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 16.0,
+          ),
+        ),
+        onChanged: (value) {
+          ref.read(searchQueryProvider.notifier).setQuery(value);
+        },
+      ),
     );
   }
 }
@@ -111,7 +249,7 @@ class _CategoriesSection extends ConsumerWidget {
                       MaterialPageRoute(
                         builder: (context) => ProductListScreen(
                           categoryId: category.id,
-                          categoryName: category.name,
+                          title: category.name,
                         ),
                       ),
                     );
@@ -145,7 +283,7 @@ class _ProductsSection extends ConsumerWidget {
         : ref.watch(searchedProductsProvider(searchQuery));
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: productsAsync.when(
         data: (products) {
           if (products.isEmpty) {
@@ -155,37 +293,31 @@ class _ProductsSection extends ConsumerWidget {
                   : 'Không tìm thấy sản phẩm cho "$searchQuery"',
             );
           }
-          return AppGrid(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12.0,
-            mainAxisSpacing: 12.0,
-            childAspectRatio: 0.7,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              final product = products[index];
-              return ProductCard(
-                product: product,
-                onAddToCart: () async {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        '${product.name} đã được thêm vào giỏ hàng',
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: AppGrid(
+              minItemWidth: 170.0,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              childAspectRatio: 0.8,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: products.length > 6 ? 6 : products.length,
+              itemBuilder: (context, index) {
+                final product = products[index];
+                return ProductCard(
+                  product: product,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetailScreen(productId: product.id),
                       ),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                  final userId = ref.read(authProvider).userId;
-                  if (userId == null) {
-                    return;
-                  }
-                  await ref
-                      .read(cartRepositoryProvider)
-                      .addProductToCart(userId, product.id);
-                },
-              );
-            },
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
         loading: () => const Center(child: LoadingSpinner()),

@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pharmacy_app/presentation/providers/auth/auth_provider.dart';
-import 'package:pharmacy_app/presentation/providers/auth/auth_state.dart';
 import 'package:pharmacy_app/presentation/providers/product_list/product_list_provider.dart';
-import 'package:pharmacy_app/presentation/providers/providers.dart';
+import 'package:pharmacy_app/presentation/screens/product_detail/product_detail_screen.dart';
 import 'package:pharmacy_app/presentation/widgets/app_grid.dart';
+import 'package:pharmacy_app/presentation/widgets/custom_app_bar.dart';
 import 'package:pharmacy_app/presentation/widgets/error_display.dart';
 import 'package:pharmacy_app/presentation/widgets/loading_spinner.dart';
 import 'package:pharmacy_app/presentation/widgets/empty_state.dart';
 import 'package:pharmacy_app/presentation/widgets/product_card.dart';
 
 class ProductListScreen extends ConsumerWidget {
-  final int categoryId;
-  final String categoryName;
+  final int? categoryId;
+  final String title;
 
   const ProductListScreen({
     super.key,
-    required this.categoryId,
-    required this.categoryName,
+    this.categoryId,
+    this.title = 'Sản phẩm',
   });
 
   @override
@@ -27,55 +26,42 @@ class ProductListScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text(categoryName), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: productsAsync.when(
-          data: (products) {
-            if (products.isEmpty) {
-              return const EmptyState(
-                message: 'Không có sản phẩm trong danh mục này.',
-              );
-            }
-            return AppGrid(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12.0,
-              mainAxisSpacing: 12.0,
-              childAspectRatio: 0.7,
+      appBar: CustomAppBar(title: title),
+      body: productsAsync.when(
+        data: (products) {
+          if (products.isEmpty) {
+            return const EmptyState(message: 'Không có sản phẩm');
+          }
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: AppGrid(
+              minItemWidth: 170.0,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              childAspectRatio: 0.8,
               itemCount: products.length,
               itemBuilder: (context, index) {
                 final product = products[index];
                 return ProductCard(
                   product: product,
-                  onAddToCart: () async {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          '${product.name} đã được thêm vào giỏ hàng',
-                        ),
-                        duration: const Duration(seconds: 2),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetailScreen(productId: product.id),
                       ),
                     );
-                    final userId = ref.read(authProvider).userId;
-                    if (userId == null) {
-                      return;
-                    }
-                    await ref
-                        .read(cartRepositoryProvider)
-                        .addProductToCart(userId, product.id);
                   },
                 );
               },
-            );
-          },
-          loading: () => const Center(child: LoadingSpinner()),
-          error: (error, stackTrace) => Center(
-            child: ErrorDisplay(
-              message: 'Lỗi tải sản phẩm',
-              onRetry: () =>
-                  ref.refresh(productListProvider(categoryId: categoryId)),
             ),
-          ),
+          );
+        },
+        loading: () => const LoadingSpinner(),
+        error: (error, stackTrace) => ErrorDisplay(
+          message: 'Lỗi tải sản phẩm',
+          onRetry: () =>
+              ref.refresh(productListProvider(categoryId: categoryId)),
         ),
       ),
     );

@@ -16,28 +16,32 @@ class CartItemsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ListView.builder(
-      itemCount: cartItems.length,
-      itemBuilder: (context, index) {
-        final cartItem = cartItems[index];
-        final product = products.firstWhere(
-          (p) => p.id == cartItem.productId,
-          orElse: () => const Product(
-            id: -1,
-            name: 'Unknown',
-            description: '',
-            price: 0,
-            stockQuantity: 0,
-            categoryId: 0,
-          ),
-        );
+    return Container(
+      color: Colors.grey[50],
+      child: ListView.builder(
+        padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+        itemCount: cartItems.length,
+        itemBuilder: (context, index) {
+          final cartItem = cartItems[index];
+          final product = products.firstWhere(
+            (p) => p.id == cartItem.productId,
+            orElse: () => const Product(
+              id: -1,
+              name: 'Unknown',
+              description: '',
+              price: 0,
+              stockQuantity: 0,
+              categoryId: 0,
+            ),
+          );
 
-        if (product.id == -1) {
-          return const SizedBox.shrink();
-        }
+          if (product.id == -1) {
+            return const SizedBox.shrink();
+          }
 
-        return CartItemTile(cartItem: cartItem, product: product);
-      },
+          return CartItemTile(cartItem: cartItem, product: product);
+        },
+      ),
     );
   }
 }

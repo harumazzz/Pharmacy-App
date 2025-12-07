@@ -15,7 +15,25 @@ class Auth extends _$Auth {
   @override
   AuthState build() {
     _authRepository = getIt<AuthRepository>();
+    _checkInitialAuth();
     return const AuthState.initial();
+  }
+
+  Future<void> _checkInitialAuth() async {
+    try {
+      final user = await _authRepository.getCurrentUser();
+      if (user != null) {
+        state = AuthState.authenticated(user);
+      } else {
+        state = const AuthState.unauthenticated();
+      }
+    } catch (e) {
+      state = const AuthState.unauthenticated();
+    }
+  }
+
+  Future<void> checkAuthStatus() async {
+    await _checkInitialAuth();
   }
 
   Future<void> login(String email, String password) async {

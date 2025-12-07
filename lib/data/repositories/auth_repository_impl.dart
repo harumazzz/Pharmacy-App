@@ -21,13 +21,15 @@ class AuthRepositoryImpl implements domain.AuthRepository {
     if (user == null) {
       throw const InvalidCredentialsException();
     }
-    return model.User(
+    final userModel = model.User(
       id: user.id,
       username: user.username,
       password: user.password,
       fullName: user.fullName,
       role: user.role,
     );
+    _setCurrentUser(userModel);
+    return userModel;
   }
 
   @override
@@ -47,17 +49,30 @@ class AuthRepositoryImpl implements domain.AuthRepository {
     if (currentUser == null) {
       throw Exception('User registration failed');
     }
-    return model.User(
+    final userModel = model.User(
       id: currentUser.id,
       username: currentUser.username,
       password: currentUser.password,
       fullName: currentUser.fullName,
       role: currentUser.role,
     );
+    _setCurrentUser(userModel);
+    return userModel;
   }
 
   @override
   Future<void> logout() async {
-    // Implement logout logic, perhaps clear session.
+    _currentUser = null;
+  }
+
+  static model.User? _currentUser;
+
+  @override
+  Future<model.User?> getCurrentUser() async {
+    return _currentUser;
+  }
+
+  void _setCurrentUser(model.User user) {
+    _currentUser = user;
   }
 }

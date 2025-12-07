@@ -53,3 +53,18 @@ final orderHistoryProvider = StreamProvider.family((ref, int userId) {
   final orderRepo = ref.watch(orderRepositoryProvider);
   return orderRepo.watchOrders(userId);
 });
+
+final orderDetailProvider = FutureProvider.family((ref, int orderId) {
+  final orderRepo = ref.watch(orderRepositoryProvider);
+  return orderRepo.getOrderDetail(orderId);
+});
+
+final orderItemsProvider = FutureProvider.family((ref, int orderId) {
+  final orderRepo = ref.watch(orderRepositoryProvider);
+  return orderRepo.getOrderItems(orderId);
+});
+
+final productDetailsProvider = FutureProvider.family((ref, int productId) {
+  final productRepo = ref.watch(productRepositoryProvider);
+  return productRepo.getProductDetails(productId);
+});
