@@ -58,9 +58,7 @@ class _SecondaryButtonState extends State<SecondaryButton>
                 width: 2,
               ),
               borderRadius: BorderRadius.circular(16.0),
-              color: _isHovered && widget.onPressed != null
-                  ? Theme.of(context).primaryColor.withValues(alpha: 0.05)
-                  : Colors.transparent,
+              color: Colors.transparent,
             ),
             child: Material(
               color: Colors.transparent,

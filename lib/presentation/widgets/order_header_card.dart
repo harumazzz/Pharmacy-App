@@ -24,14 +24,7 @@ class OrderHeaderCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Theme.of(context).primaryColor.withValues(alpha: 0.05),
-              Theme.of(context).primaryColor.withValues(alpha: 0.02),
-            ],
-          ),
+          color: Colors.white,
         ),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -87,14 +80,7 @@ class OrderHeaderCard extends StatelessWidget {
               // Divider
               Container(
                 height: 1,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.grey[300]!,
-                      Colors.grey[300]!.withValues(alpha: 0),
-                    ],
-                  ),
-                ),
+                color: Colors.grey[300],
               ),
               const SizedBox(height: 16.0),
               // Info Rows

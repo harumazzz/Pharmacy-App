@@ -75,27 +75,14 @@ class _PrimaryButtonState extends State<PrimaryButton>
             height: 56,
             width: double.infinity,
             decoration: BoxDecoration(
-              gradient: widget.onPressed != null
-                  ? LinearGradient(
-                      colors: [
-                        Theme.of(context).primaryColor,
-                        Theme.of(context).primaryColor.withBlue(
-                          (Theme.of(context).primaryColor.b * 0.8).toInt(),
-                        ),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    )
-                  : LinearGradient(
-                      colors: [Colors.grey[400]!, Colors.grey[500]!],
-                    ),
+              color: widget.onPressed != null
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey[400],
               borderRadius: BorderRadius.circular(16.0),
               boxShadow: widget.onPressed != null
                   ? [
                       BoxShadow(
-                        color: Theme.of(
-                          context,
-                        ).primaryColor.withValues(alpha: 0.3),
+                        color: Colors.black.withValues(alpha: 0.15),
                         blurRadius: _isPressed ? 8 : 12,
                         offset: Offset(0, _isPressed ? 2 : 4),
                       ),

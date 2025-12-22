@@ -15,8 +15,6 @@ class _CategoryCardState extends State<CategoryCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
-  late Animation<double> _shadowAnimation;
-  bool _isPressed = false;
 
   @override
   void initState() {
@@ -28,9 +26,6 @@ class _CategoryCardState extends State<CategoryCard>
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
-    _shadowAnimation = Tween<double>(begin: 4.0, end: 8.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
   }
 
   @override
@@ -40,24 +35,15 @@ class _CategoryCardState extends State<CategoryCard>
   }
 
   void _onTapDown(TapDownDetails details) {
-    setState(() {
-      _isPressed = true;
-    });
     _animationController.forward();
   }
 
   void _onTapUp(TapUpDetails details) {
-    setState(() {
-      _isPressed = false;
-    });
     _animationController.reverse();
     widget.onTap?.call();
   }
 
   void _onTapCancel() {
-    setState(() {
-      _isPressed = false;
-    });
     _animationController.reverse();
   }
 
@@ -100,29 +86,7 @@ class _CategoryCardState extends State<CategoryCard>
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.0),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                    Theme.of(context).primaryColor.withValues(alpha: 0.05),
-                    Colors.white,
-                  ],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(
-                      context,
-                    ).primaryColor.withValues(alpha: 0.15),
-                    blurRadius: _shadowAnimation.value,
-                    offset: Offset(0, _isPressed ? 2 : 4),
-                    spreadRadius: _isPressed ? 0 : 1,
-                  ),
-                ],
-                border: Border.all(
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-                  width: 1,
-                ),
+                color: Colors.white,
               ),
               child: Material(
                 color: Colors.transparent,

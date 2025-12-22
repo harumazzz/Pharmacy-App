@@ -47,12 +47,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ? IconButton(
                   icon: Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).primaryColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
                     child: Icon(
                       Icons.arrow_back_ios_new,
                       size: 18,
@@ -199,20 +193,7 @@ class CustomSliverAppBar extends StatelessWidget {
             ),
           ),
         ),
-        background:
-            background ??
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                    Colors.white,
-                  ],
-                ),
-              ),
-            ),
+        background: background ?? Container(color: Colors.white),
       ),
     );
   }

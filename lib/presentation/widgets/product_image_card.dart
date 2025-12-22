@@ -76,11 +76,7 @@ class _ImagePlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Colors.grey[100]!, Colors.grey[200]!],
-        ),
+        color: Colors.grey[100],
       ),
       child: Center(
         child: Column(

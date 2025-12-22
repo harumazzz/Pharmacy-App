@@ -30,16 +30,7 @@ class ProductCard extends StatelessWidget {
             Container(
               height: 160,
               width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12.0),
-                ),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.grey[100]!, Colors.grey[50]!],
-                ),
-              ),
+              color: Colors.grey[100],
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(12.0),
@@ -49,11 +40,7 @@ class ProductCard extends StatelessWidget {
                         product.imageUrl!,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) => Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.blue[50]!, Colors.blue[100]!],
-                            ),
-                          ),
+                          color: Colors.blue[50],
                           child: Icon(
                             Icons.medical_services_outlined,
                             size: 60,
@@ -62,11 +49,7 @@ class ProductCard extends StatelessWidget {
                         ),
                       )
                     : Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.blue[50]!, Colors.blue[100]!],
-                          ),
-                        ),
+                        color: Colors.blue[50],
                         child: Icon(
                           Icons.medical_services_outlined,
                           size: 60,

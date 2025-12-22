@@ -13,14 +13,7 @@ class ProductDescriptionCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.orange.withValues(alpha: 0.05),
-              Colors.amber.withValues(alpha: 0.05),
-            ],
-          ),
+          color: Colors.white,
         ),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -53,14 +46,7 @@ class ProductDescriptionCard extends StatelessWidget {
               const SizedBox(height: 16.0),
               Container(
                 height: 1,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.grey[300]!,
-                      Colors.grey[300]!.withValues(alpha: 0),
-                    ],
-                  ),
-                ),
+                color: Colors.grey[300],
               ),
               const SizedBox(height: 14.0),
               Text(

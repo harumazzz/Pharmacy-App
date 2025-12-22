@@ -150,9 +150,7 @@ class _CustomTextFieldState extends State<CustomTextField>
                 borderSide: const BorderSide(color: Colors.red, width: 2.0),
               ),
               filled: true,
-              fillColor: _isFocused
-                  ? Theme.of(context).primaryColor.withValues(alpha: 0.05)
-                  : Colors.grey[50],
+              fillColor: Colors.grey[50],
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
                 vertical: 16.0,

@@ -28,14 +28,7 @@ class OrderItemCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.blue.withValues(alpha: 0.02),
-              Colors.teal.withValues(alpha: 0.02),
-            ],
-          ),
+          color: Colors.white,
         ),
         child: ListItem(
           onTap: onTap,

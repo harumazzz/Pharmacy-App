@@ -14,11 +14,7 @@ class OrderTotalCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.green.shade50, Colors.teal.shade50],
-          ),
+          color: Colors.white,
         ),
         child: Stack(
           children: [

@@ -47,7 +47,7 @@ class _ListItemState extends State<ListItem>
     _backgroundColorAnimation =
         ColorTween(
           begin: Colors.transparent,
-          end: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+          end: Colors.grey[50]!,
         ).animate(
           CurvedAnimation(
             parent: _animationController,
