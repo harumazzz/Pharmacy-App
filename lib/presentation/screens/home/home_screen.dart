@@ -19,6 +19,7 @@ import 'package:pharmacy_app/presentation/widgets/error_display.dart';
 import 'package:pharmacy_app/presentation/widgets/loading_spinner.dart';
 import 'package:pharmacy_app/presentation/widgets/empty_state.dart';
 import 'package:pharmacy_app/presentation/widgets/product_card.dart';
+import 'package:pharmacy_app/presentation/widgets/ai_chat_dialog.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -36,6 +37,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: CustomAppBar(
         title: 'Trang chủ',
         actions: [
+          IconButton(
+            icon: const Icon(Icons.smart_toy),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => const AIChatDialog(),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.shopping_cart),
             onPressed: () {

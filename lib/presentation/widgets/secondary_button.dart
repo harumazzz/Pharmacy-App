@@ -20,7 +20,6 @@ class _SecondaryButtonState extends State<SecondaryButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
-  bool _isHovered = false;
 
   @override
   void initState() {
@@ -66,25 +65,19 @@ class _SecondaryButtonState extends State<SecondaryButton>
                 onTap: widget.onPressed,
                 onTapDown: widget.onPressed != null
                     ? (_) {
-                        setState(() {
-                          _isHovered = true;
-                        });
+                        setState(() {});
                         _animationController.forward();
                       }
                     : null,
                 onTapUp: widget.onPressed != null
                     ? (_) {
-                        setState(() {
-                          _isHovered = false;
-                        });
+                        setState(() {});
                         _animationController.reverse();
                       }
                     : null,
                 onTapCancel: widget.onPressed != null
                     ? () {
-                        setState(() {
-                          _isHovered = false;
-                        });
+                        setState(() {});
                         _animationController.reverse();
                       }
                     : null,

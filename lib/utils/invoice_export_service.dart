@@ -143,12 +143,10 @@ class InvoiceExportService {
     }
 
     // Dữ liệu sản phẩm
-    double subtotal = 0;
     for (int i = 0; i < orderItems.length; i++) {
       final item = orderItems[i];
       final rowNum = startRow + 1 + i;
       final itemTotal = item.quantity * item.price;
-      subtotal += itemTotal;
 
       // Tìm tên sản phẩm
       final product = products.firstWhere(
