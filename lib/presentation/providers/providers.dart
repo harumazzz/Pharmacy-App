@@ -6,6 +6,7 @@ import 'package:pharmacy_app/domain/repositories/cart_repository.dart';
 import 'package:pharmacy_app/domain/repositories/category_repository.dart';
 import 'package:pharmacy_app/domain/repositories/order_repository.dart';
 import 'package:pharmacy_app/domain/repositories/product_repository.dart';
+import 'package:pharmacy_app/domain/repositories/user_repository.dart';
 import 'package:pharmacy_app/di/injection.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>(
@@ -22,6 +23,9 @@ final cartRepositoryProvider = Provider<CartRepository>(
 );
 final orderRepositoryProvider = Provider<OrderRepository>(
   (ref) => getIt<OrderRepository>(),
+);
+final userRepositoryProvider = Provider<UserRepository>(
+  (ref) => getIt<UserRepository>(),
 );
 final adminRepositoryProvider = Provider<AdminRepository>(
   (ref) => getIt<AdminRepository>(),
@@ -68,3 +72,21 @@ final productDetailsProvider = FutureProvider.family((ref, int productId) {
   final productRepo = ref.watch(productRepositoryProvider);
   return productRepo.getProductDetails(productId);
 });
+
+// Admin providers
+final categoryListProvider = StreamProvider((ref) {
+  final categoryRepo = ref.watch(categoryRepositoryProvider);
+  return categoryRepo.watchCategories();
+});
+
+final orderListProvider = StreamProvider((ref) {
+  final orderRepo = ref.watch(orderRepositoryProvider);
+  return orderRepo.watchAllOrders();
+});
+
+final userListProvider = StreamProvider((ref) {
+  final userRepo = ref.watch(userRepositoryProvider);
+  return userRepo.watchAllUsers();
+});
+
+// Note: productDetailProvider is defined in product_detail/product_detail_provider.dart

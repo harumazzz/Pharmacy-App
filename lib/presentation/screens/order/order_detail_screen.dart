@@ -5,8 +5,11 @@ import 'package:pharmacy_app/presentation/providers/providers.dart';
 import 'package:pharmacy_app/presentation/widgets/custom_app_bar.dart';
 import 'package:pharmacy_app/presentation/widgets/empty_state.dart';
 import 'package:pharmacy_app/presentation/widgets/error_display.dart';
-import 'package:pharmacy_app/presentation/widgets/list_item.dart';
 import 'package:pharmacy_app/presentation/widgets/loading_spinner.dart';
+import 'package:pharmacy_app/presentation/widgets/order_header_card.dart';
+import 'package:pharmacy_app/presentation/widgets/order_item_card.dart';
+import 'package:pharmacy_app/presentation/widgets/order_timeline.dart';
+import 'package:pharmacy_app/presentation/widgets/order_total_card.dart';
 
 class OrderDetailScreen extends ConsumerWidget {
   final int orderId;
@@ -29,71 +32,31 @@ class OrderDetailScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Order Header
-                Card(
-                  margin: const EdgeInsets.all(16.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Đơn hàng #${order.id}',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            _StatusBadge(status: order.status),
-                          ],
-                        ),
-                        const SizedBox(height: 12.0),
-                        Text(
-                          'Ngày đặt: $formattedDate',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          'Địa chỉ: ${order.shippingAddress}',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
-                  ),
+                OrderHeaderCard(
+                  orderId: order.id,
+                  status: order.status,
+                  formattedDate: formattedDate,
+                  shippingAddress: order.shippingAddress,
                 ),
-                // Order Items
+                // Order Timeline
+                OrderTimeline(status: order.status),
+                // Order Items Section
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 12.0,
+                  ),
                   child: Text(
                     'Chi tiết sản phẩm',
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 _OrderItemsSection(orderId: orderId),
-                // Total
-                Card(
-                  margin: const EdgeInsets.all(16.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Tổng cộng:',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        Text(
-                          '${order.totalPrice.toStringAsFixed(0)}₫',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // Total Card
+                OrderTotalCard(totalPrice: order.totalPrice),
+                const SizedBox(height: 16.0),
               ],
             ),
           );
@@ -107,61 +70,6 @@ class OrderDetailScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  final String status;
-
-  const _StatusBadge({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    final color = _getStatusColor(status);
-    final text = _getStatusText(status);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.2),
-        border: Border.all(color: color),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(color: color, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  Color _getStatusColor(String status) {
-    switch (status) {
-      case 'pending':
-        return Colors.orange;
-      case 'processing':
-        return Colors.blue;
-      case 'shipped':
-        return Colors.purple;
-      case 'delivered':
-        return Colors.green;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  String _getStatusText(String status) {
-    switch (status) {
-      case 'pending':
-        return 'Chờ xử lý';
-      case 'processing':
-        return 'Đang xử lý';
-      case 'shipped':
-        return 'Đang giao';
-      case 'delivered':
-        return 'Đã giao';
-      default:
-        return status;
-    }
   }
 }
 
@@ -215,39 +123,25 @@ class _OrderItemCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productAsync = ref.watch(productDetailsProvider(orderItem.productId));
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-      child: productAsync.when(
-        data: (product) {
-          return ListItem(
-            title: Text(product.name),
-            subtitle: Text('Số lượng: ${orderItem.quantity}'),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '${orderItem.price.toStringAsFixed(0)}₫',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'x${orderItem.quantity}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-          );
-        },
-        loading: () => ListItem(
-          title: const Text('Đang tải...'),
-          subtitle: Text('Số lượng: ${orderItem.quantity}'),
-          trailing: Text('${orderItem.price.toStringAsFixed(0)}₫'),
-        ),
-        error: (error, stackTrace) => ListItem(
-          title: Text('Sản phẩm #${orderItem.productId}'),
-          subtitle: Text('Số lượng: ${orderItem.quantity}'),
-          trailing: Text('${orderItem.price.toStringAsFixed(0)}₫'),
-        ),
+    return productAsync.when(
+      data: (product) {
+        return OrderItemCard(
+          title: product.name,
+          quantity: orderItem.quantity,
+          price: orderItem.price,
+          subtitle: 'Số lượng: ${orderItem.quantity}',
+        );
+      },
+      loading: () => OrderItemCard(
+        title: 'Đang tải...',
+        quantity: orderItem.quantity,
+        price: orderItem.price,
+        isLoading: true,
+      ),
+      error: (error, stackTrace) => OrderItemCard(
+        title: 'Sản phẩm #${orderItem.productId}',
+        quantity: orderItem.quantity,
+        price: orderItem.price,
       ),
     );
   }

@@ -32,9 +32,7 @@ class Checkout extends _$Checkout {
     state = const CheckoutState.loading();
     try {
       final cartItems = await ref.read(cartItemsProvider(userId).future);
-      final products = await ref.read(
-        productListProvider(categoryId: null).future,
-      );
+      final products = await ref.read(productListProvider().future);
 
       if (cartItems.isEmpty) {
         state = const CheckoutState.error('Giỏ hàng trống');

@@ -77,7 +77,9 @@ class _CustomTextFieldState extends State<CustomTextField>
             boxShadow: _isFocused
                 ? [
                     BoxShadow(
-                      color: Theme.of(context).primaryColor.withOpacity(0.2),
+                      color: Theme.of(
+                        context,
+                      ).primaryColor.withValues(alpha: 0.2),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -149,7 +151,7 @@ class _CustomTextFieldState extends State<CustomTextField>
               ),
               filled: true,
               fillColor: _isFocused
-                  ? Theme.of(context).primaryColor.withOpacity(0.05)
+                  ? Theme.of(context).primaryColor.withValues(alpha: 0.05)
                   : Colors.grey[50],
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16.0,

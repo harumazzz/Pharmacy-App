@@ -15,13 +15,15 @@ class OrderDao extends DatabaseAccessor<AppDatabase> with _$OrderDaoMixin {
 
   Future<List<Order>> getUserOrders(int userId) {
     return (select(orders)
-          ..where((o) => o.userId.equals(userId))
+          ..where((o) => o.userId.equals(userId) & o.deletedAt.isNull())
           ..orderBy([(o) => OrderingTerm.desc(o.createdAt)]))
         .get();
   }
 
   Future<List<Order>> getAllOrders() {
-    return (select(orders)..orderBy([(o) => OrderingTerm.desc(o.createdAt)]))
+    return (select(orders)
+          ..where((o) => o.deletedAt.isNull())
+          ..orderBy([(o) => OrderingTerm.desc(o.createdAt)]))
         .get();
   }
 
@@ -30,4 +32,37 @@ class OrderDao extends DatabaseAccessor<AppDatabase> with _$OrderDaoMixin {
       OrdersCompanion(status: Value(newStatus)),
     );
   }
+
+  Future<int> softDeleteOrder(int id) =>
+      (update(orders)..where((o) => o.id.equals(id))).write(
+        OrdersCompanion(deletedAt: Value(DateTime.now())),
+      );
+
+  Future<int> permanentlyDeleteOrder(int id) =>
+      (delete(orders)..where((o) => o.id.equals(id))).go();
+
+  Future<int> restoreOrder(int id) =>
+      (update(orders)..where((o) => o.id.equals(id))).write(
+        const OrdersCompanion(deletedAt: Value(null)),
+      );
+
+  Future<List<Order>> getDeletedOrders() =>
+      (select(orders)..where((o) => o.deletedAt.isNotNull())).get();
+
+  Stream<List<Order>> getUserOrdersStream(int userId) {
+    return (select(orders)
+          ..where((o) => o.userId.equals(userId) & o.deletedAt.isNull())
+          ..orderBy([(o) => OrderingTerm.desc(o.createdAt)]))
+        .watch();
+  }
+
+  Stream<List<Order>> getAllOrdersStream() {
+    return (select(orders)
+          ..where((o) => o.deletedAt.isNull())
+          ..orderBy([(o) => OrderingTerm.desc(o.createdAt)]))
+        .watch();
+  }
+
+  Stream<List<Order>> getDeletedOrdersStream() =>
+      (select(orders)..where((o) => o.deletedAt.isNotNull())).watch();
 }

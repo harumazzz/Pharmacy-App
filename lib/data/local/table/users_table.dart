@@ -6,4 +6,7 @@ class Users extends Table {
   TextColumn get password => text()();
   TextColumn get fullName => text().nullable()();
   TextColumn get role => text()();
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(Constant(DateTime.now()))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 }

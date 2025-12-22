@@ -35,6 +35,27 @@ class OrderRepositoryImpl implements domain.OrderRepository {
   }
 
   @override
+  Stream<List<model.Order>> watchAllOrders() {
+    return (_db.select(_db.orders)
+          ..orderBy([(o) => OrderingTerm.desc(o.createdAt)]))
+        .watch()
+        .map(
+          (orders) => orders
+              .map(
+                (order) => model.Order(
+                  id: order.id,
+                  userId: order.userId,
+                  totalPrice: order.totalPrice,
+                  status: order.status,
+                  shippingAddress: order.shippingAddress,
+                  createdAt: order.createdAt,
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  @override
   Future<List<model.Order>> getOrdersForUser(int userId) async {
     final orders = await _db.orderDao.getUserOrders(userId);
     return orders

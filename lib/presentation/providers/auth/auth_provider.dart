@@ -8,7 +8,7 @@ import '../../../data/models/user.dart' as model;
 
 part 'auth_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Auth extends _$Auth {
   late final AuthRepository _authRepository;
 

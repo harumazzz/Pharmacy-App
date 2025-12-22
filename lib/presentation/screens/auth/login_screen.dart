@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pharmacy_app/presentation/providers/auth/auth_provider.dart';
 import 'package:pharmacy_app/presentation/providers/auth/auth_state.dart';
+import 'package:pharmacy_app/presentation/screens/admin/admin_screen.dart';
 import 'package:pharmacy_app/presentation/screens/home/home_screen.dart';
 import 'package:pharmacy_app/presentation/widgets/custom_text_field.dart';
 import 'package:pharmacy_app/presentation/widgets/primary_button.dart';
 import 'package:pharmacy_app/presentation/widgets/secondary_button.dart';
 import 'package:pharmacy_app/presentation/screens/auth/register_screen.dart';
+import 'package:pharmacy_app/utils/toast_extension.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -57,15 +59,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       next.when(
         initial: () {},
         loading: () {},
-        authenticated: (_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Đăng nhập thành công!'),
-              backgroundColor: Colors.green,
-            ),
+        authenticated: (user) {
+          context.showToast(
+            'Đăng nhập thành công!',
+            backgroundColor: Colors.green,
           );
+          final nextScreen = user.role == 'admin'
+              ? const AdminScreen()
+              : const HomeScreen();
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const HomeScreen()),
+            MaterialPageRoute(builder: (_) => nextScreen),
           );
         },
         unauthenticated: () {},
@@ -75,7 +78,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             displayMessage = 'Email hoặc mật khẩu không hợp lệ.';
           } else {
             displayMessage = 'Đã xảy ra lỗi. Vui lòng thử lại sau.';
+            debugPrint('Login error: $message');
           }
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(displayMessage),
@@ -107,8 +112,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Theme.of(context).primaryColor.withOpacity(0.1),
-              Theme.of(context).primaryColor.withOpacity(0.05),
+              Theme.of(context).primaryColor.withValues(alpha: 0.1),
+              Theme.of(context).primaryColor.withValues(alpha: 0.05),
               Colors.white,
             ],
           ),
@@ -137,7 +142,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 BoxShadow(
                                   color: Theme.of(
                                     context,
-                                  ).primaryColor.withOpacity(0.3),
+                                  ).primaryColor.withValues(alpha: 0.3),
                                   blurRadius: 20,
                                   offset: const Offset(0, 10),
                                 ),

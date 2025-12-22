@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pharmacy_app/data/local/mock_data_service.dart';
 import 'package:pharmacy_app/di/injection.dart';
 import 'package:pharmacy_app/presentation/screens/auth/auth_wrapper.dart';
+import 'package:pharmacy_app/utils/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
-  //await _loadMockData();
+  await NotificationHelper.initialize();
+  await _loadMockData();
   runApp(const ProviderScope(child: MyApp()));
 }
 

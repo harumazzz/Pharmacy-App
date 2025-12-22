@@ -7,4 +7,5 @@ class Orders extends Table {
   TextColumn get status => text()();
   TextColumn get shippingAddress => text()();
   DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 }

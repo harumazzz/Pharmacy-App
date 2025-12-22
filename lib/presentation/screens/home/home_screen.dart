@@ -6,6 +6,7 @@ import 'package:pharmacy_app/presentation/providers/home/category_list_provider.
 import 'package:pharmacy_app/presentation/providers/home/search_query_provider.dart';
 import 'package:pharmacy_app/presentation/providers/home/searched_products_provider.dart';
 import 'package:pharmacy_app/presentation/providers/product_list/product_list_provider.dart';
+import 'package:pharmacy_app/presentation/screens/auth/auth_wrapper.dart';
 import 'package:pharmacy_app/presentation/screens/cart/cart_screen.dart';
 import 'package:pharmacy_app/presentation/screens/product_detail/product_detail_screen.dart';
 import 'package:pharmacy_app/presentation/screens/order/order_history_screen.dart';
@@ -52,6 +53,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: const Text('Đăng xuất'),
                 onTap: () {
                   ref.read(authProvider.notifier).logout();
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const AuthWrapper(),
+                    ),
+                  );
                 },
               ),
             ],
@@ -178,7 +184,7 @@ class _SearchBar extends ConsumerWidget {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

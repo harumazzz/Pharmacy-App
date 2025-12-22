@@ -8,4 +8,5 @@ class Products extends Table {
   IntColumn get stockQuantity => integer()();
   IntColumn get categoryId => integer()();
   TextColumn get imageUrl => text()();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 }

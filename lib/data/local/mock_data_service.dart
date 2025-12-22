@@ -61,7 +61,7 @@ class MockDataService {
     final users = [
       UsersCompanion.insert(
         username: 'admin@gmail.com',
-        password: 'admin123', // Trong thực tế nên hash password
+        password: 'admin123',
         fullName: const Value('Quản trị viên'),
         role: 'admin',
       ),

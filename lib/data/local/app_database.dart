@@ -29,7 +29,20 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 3;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (m, oldVersion, newVersion) async {
+      if (oldVersion < 2) {
+        await m.addColumn(categories, categories.deletedAt);
+        await m.addColumn(users, users.deletedAt);
+      }
+      if (oldVersion < 3) {
+        await m.addColumn(users, users.createdAt);
+      }
+    },
+  );
 }
 
 LazyDatabase _openConnection() {

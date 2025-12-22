@@ -104,21 +104,23 @@ class _CategoryCardState extends State<CategoryCard>
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Theme.of(context).primaryColor.withOpacity(0.1),
-                    Theme.of(context).primaryColor.withOpacity(0.05),
+                    Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                    Theme.of(context).primaryColor.withValues(alpha: 0.05),
                     Colors.white,
                   ],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).primaryColor.withOpacity(0.15),
+                    color: Theme.of(
+                      context,
+                    ).primaryColor.withValues(alpha: 0.15),
                     blurRadius: _shadowAnimation.value,
                     offset: Offset(0, _isPressed ? 2 : 4),
                     spreadRadius: _isPressed ? 0 : 1,
                   ),
                 ],
                 border: Border.all(
-                  color: Theme.of(context).primaryColor.withOpacity(0.2),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -137,7 +139,7 @@ class _CategoryCardState extends State<CategoryCard>
                         decoration: BoxDecoration(
                           color: Theme.of(
                             context,
-                          ).primaryColor.withOpacity(0.1),
+                          ).primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         child: Icon(

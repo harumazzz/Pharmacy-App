@@ -47,7 +47,7 @@ class _ListItemState extends State<ListItem>
     _backgroundColorAnimation =
         ColorTween(
           begin: Colors.transparent,
-          end: Theme.of(context).primaryColor.withOpacity(0.05),
+          end: Theme.of(context).primaryColor.withValues(alpha: 0.05),
         ).animate(
           CurvedAnimation(
             parent: _animationController,
@@ -88,7 +88,9 @@ class _ListItemState extends State<ListItem>
             borderRadius: BorderRadius.circular(12.0),
             border: _isHovered && widget.onTap != null
                 ? Border.all(
-                    color: Theme.of(context).primaryColor.withOpacity(0.3),
+                    color: Theme.of(
+                      context,
+                    ).primaryColor.withValues(alpha: 0.3),
                     width: 1,
                   )
                 : null,

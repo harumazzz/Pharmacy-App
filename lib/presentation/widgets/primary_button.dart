@@ -80,7 +80,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
                       colors: [
                         Theme.of(context).primaryColor,
                         Theme.of(context).primaryColor.withBlue(
-                          (Theme.of(context).primaryColor.blue * 0.8).toInt(),
+                          (Theme.of(context).primaryColor.b * 0.8).toInt(),
                         ),
                       ],
                       begin: Alignment.topLeft,
@@ -93,7 +93,9 @@ class _PrimaryButtonState extends State<PrimaryButton>
               boxShadow: widget.onPressed != null
                   ? [
                       BoxShadow(
-                        color: Theme.of(context).primaryColor.withOpacity(0.3),
+                        color: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: 0.3),
                         blurRadius: _isPressed ? 8 : 12,
                         offset: Offset(0, _isPressed ? 2 : 4),
                       ),

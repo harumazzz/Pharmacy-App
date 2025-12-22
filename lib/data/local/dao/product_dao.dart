@@ -10,15 +10,20 @@ class ProductDao extends DatabaseAccessor<AppDatabase> with _$ProductDaoMixin {
 
   ProductDao(this.db) : super(db);
 
-  Future<List<Product>> getAllProducts() => select(products).get();
+  Future<List<Product>> getAllProducts() =>
+      (select(products)..where((p) => p.deletedAt.isNull())).get();
 
   Future<List<Product>> getProductsByCategory(int categoryId) {
-    return (select(products)..where((p) => p.categoryId.equals(categoryId)))
+    return (select(
+          products,
+        )..where((p) => p.categoryId.equals(categoryId) & p.deletedAt.isNull()))
         .get();
   }
 
   Future<List<Product>> searchProducts(String query) {
-    return (select(products)..where((p) => p.name.like('%$query%'))).get();
+    return (select(
+      products,
+    )..where((p) => p.name.like('%$query%') & p.deletedAt.isNull())).get();
   }
 
   Future<void> addProduct(ProductsCompanion product) =>
@@ -27,6 +32,32 @@ class ProductDao extends DatabaseAccessor<AppDatabase> with _$ProductDaoMixin {
   Future<bool> updateProduct(ProductsCompanion product) =>
       update(products).replace(product);
 
-  Future<int> deleteProduct(int id) =>
+  Future<int> softDeleteProduct(int id) =>
+      (update(products)..where((p) => p.id.equals(id))).write(
+        ProductsCompanion(deletedAt: Value(DateTime.now())),
+      );
+
+  Future<int> permanentlyDeleteProduct(int id) =>
       (delete(products)..where((p) => p.id.equals(id))).go();
+
+  Future<int> restoreProduct(int id) =>
+      (update(products)..where((p) => p.id.equals(id))).write(
+        const ProductsCompanion(deletedAt: Value(null)),
+      );
+
+  Future<List<Product>> getDeletedProducts() =>
+      (select(products)..where((p) => p.deletedAt.isNotNull())).get();
+
+  Stream<List<Product>> getAllProductsStream() =>
+      (select(products)..where((p) => p.deletedAt.isNull())).watch();
+
+  Stream<List<Product>> getDeletedProductsStream() =>
+      (select(products)..where((p) => p.deletedAt.isNotNull())).watch();
+
+  Stream<List<Product>> getProductsByCategoryStream(int categoryId) {
+    return (select(
+          products,
+        )..where((p) => p.categoryId.equals(categoryId) & p.deletedAt.isNull()))
+        .watch();
+  }
 }
